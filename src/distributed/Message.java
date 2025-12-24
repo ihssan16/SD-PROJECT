@@ -30,7 +30,7 @@ public class Message {
     }
 
     @Override
-public String toString() {
+    public String toString() {
         return "Message{" +
                 "senderId=" + senderId +
                 ", payload='" + payload + '\'' +
