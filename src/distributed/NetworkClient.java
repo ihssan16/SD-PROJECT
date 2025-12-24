@@ -2,37 +2,24 @@ package distributed;
 
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Arrays;
 
 public class NetworkClient {
 
-    // public static void sendTo(Node node, String message) {
-    //     try {
-    //         Socket socket = new Socket(node.getIp(), node.getPort());
-    //         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-
-    //         out.println(message);
-
-    //         socket.close();
-    //     } catch (Exception e) {
-    //         e.printStackTrace();
-    //     }
-    // }
-
-    public static void sendTo(Node node, int senderId, String message) {
+    public static void sendTo(Node node, int senderId, String message, LamportClock lamport, VectorClock vc) {
         try {
             Socket socket = new Socket(node.getIp(), node.getPort());
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
-            out.println(senderId + ":" + message);
+            int currentLamport = lamport.tick();
+            vc.tick();
+            String vectorStr = Arrays.toString(vc.getTimestamps()).replace(" ", "");
+            
+            out.println(senderId + "|" + currentLamport + "|" + vectorStr + "|" + message);
 
             socket.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    public static void sendTo(Node node, String message) {
-        sendTo(node, 0, message);
-    }
 }
-
