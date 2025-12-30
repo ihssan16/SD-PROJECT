@@ -1,5 +1,7 @@
 package distributed;
 
+import java.util.Arrays;
+
 public class Message {
     private int senderId;
     private String payload;

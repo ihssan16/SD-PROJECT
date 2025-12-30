@@ -6,15 +6,16 @@ public class TestCausal{
     public static void main(String[] args) {
         System.out.println("=== TEST CAUSALITÉ 3 NOEUDS  ===\n");
 
-        int myId = 3; 
+        int myId = 3;
         int numNodes = 3;
         VectorClock vClock = new VectorClock(numNodes, myId);
-        
+
         CausalMiddleware.INetwork networkMock = msg -> { };
-        
+
         CausalMiddleware middleware = new CausalMiddleware(myId, vClock, networkMock);
 
         System.out.println("Nous sommes le Nœud 3. État initial : " + Arrays.toString(vClock.getTimestamps()));
+        System.out.println("Note: VC initial doit être [0,0,0]");
 
         // M1
         int[] clockM1 = {1, 0, 0};
@@ -25,9 +26,11 @@ public class TestCausal{
         Message m2 = new Message(2, "M2: Réponse", 0, clockM2);
 
         System.out.println("--- 1. Arrivée de M2 (Trop tôt) ---");
+        System.out.println("M2: VC=" + Arrays.toString(clockM2) + ", VC local=" + Arrays.toString(vClock.getTimestamps()));
         middleware.onReceive(m2);
-        
+
         System.out.println("--- 2. Arrivée de M1 ---");
+        System.out.println("M1: VC=" + Arrays.toString(clockM1) + ", VC local=" + Arrays.toString(vClock.getTimestamps()));
         middleware.onReceive(m1);
 
         System.out.println("--- 3. Pause 2s pour le Thread ---");

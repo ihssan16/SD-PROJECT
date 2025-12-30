@@ -12,9 +12,14 @@ public class NetworkClient {
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
             int currentLamport = lamport.tick();
-            vc.tick();
-            String vectorStr = Arrays.toString(vc.getTimestamps()).replace(" ", "");
-            
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < vc.getTimestamps().length; i++) {
+                if (i > 0) sb.append(",");
+                sb.append(vc.getTimestamps()[i]);
+            }
+            String vectorStr = sb.toString();
+
             out.println(senderId + "|" + currentLamport + "|" + vectorStr + "|" + message);
 
             socket.close();

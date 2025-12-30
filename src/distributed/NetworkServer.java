@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 
 public class NetworkServer extends Thread {
@@ -34,14 +35,14 @@ public class NetworkServer extends Thread {
                     String[] parts = rawData.split("\\|", 4);
                     int senderId = Integer.parseInt(parts[0]);
                     int remoteLamport = Integer.parseInt(parts[1]);
-                    
-                    String vcStr = parts[2].replace("[", "").replace("]", "");
+
+                    String vcStr = parts[2];
+                    // Supprimer tous les espaces
+                    vcStr = vcStr.replaceAll("\\s+", "");
                     int[] remoteVC = Arrays.stream(vcStr.split(",")).mapToInt(Integer::parseInt).toArray();
                     String payload = parts[3];
-                    
-                    lamport.update(remoteLamport);
-                    vc.update(remoteVC);
 
+                    lamport.update(remoteLamport);
                     // Création du message enrichi avec les horloges reçues
                     Message msg = new Message(senderId, payload, remoteLamport, remoteVC);
                     messageQueue.put(msg);
